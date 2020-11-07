@@ -1,0 +1,48 @@
+description: Uploads an asset to an existing GitHub release
+name: github.com/opspec-pkgs/github.release.upload
+opspec: 0.1.6
+version: 1.0.0
+inputs:
+  owner:
+    string:
+      constraints: { minLength: 1 }
+      description: the github account owner of the release
+  repo:
+    string:
+      constraints: { minLength: 1 }
+      description: the github repo of the release
+  id:
+    number:
+      description: the github release ID
+  loginUsername:
+    string:
+      constraints: { minLength: 1 }
+      description: user for logging in to the github api
+  loginPassword:
+    string:
+      constraints: { minLength: 1 }
+      description: password for logging in to the github api
+      isSecret: true
+  name:
+    string:
+      constraints: { minLength: 1 }
+      description: file name of the asset as it will be shown on GitHub
+  asset:
+    file:
+      description: The file to be uploaded as an asset
+run:
+  serial:
+    - container:
+        image: { ref: 'opspecpkgs/github.release.upload:1.0.0' }
+        cmd: [ /cmd.sh ]
+        envVars:
+          owner:
+          repo:
+          id:
+          loginUsername:
+          loginPassword:
+          name:
+        workDir: /
+        files:
+          /cmd.sh: $(/cmd.sh)
+          /asset: $(asset)
