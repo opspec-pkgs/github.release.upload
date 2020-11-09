@@ -27,6 +27,14 @@ opctl run github.com/opspec-pkgs/github.release.upload#1.0.0
 ```yaml
 op:
   ref: github.com/opspec-pkgs/github.release.upload#1.0.0
+  inputs:
+    asset:  # Local asset file to upload
+    id:     # ID of GitHub release, can be obtained from github.release.create
+    loginPassword:
+    loginUsername:
+    name:   # Name of the asset as it will appear on github
+    owner:
+    repo:
 ```
 
 # Support
