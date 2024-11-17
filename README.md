@@ -10,25 +10,24 @@ Uploads an asset to an existing GitHub release
 ## Visualize
 
 ```shell
-opctl ui github.com/opspec-pkgs/github.release.upload#1.0.0
+opctl ui github.com/opspec-pkgs/github.release.upload#2.0.0
 ```
 
 ## Run
 
 ```
-opctl run github.com/opspec-pkgs/github.release.upload#1.0.0
+opctl run github.com/opspec-pkgs/github.release.upload#2.0.0
 ```
 
 ## Compose
 
 ```yaml
 op:
-  ref: github.com/opspec-pkgs/github.release.upload#1.0.0
+  ref: github.com/opspec-pkgs/github.release.upload#2.0.0
   inputs:
+    accessToken:  # 👈 required; provide a value
     asset:  # 👈 required; provide a value
     id:  # 👈 required; provide a value
-    loginPassword:  # 👈 required; provide a value
-    loginUsername:  # 👈 required; provide a value
     name:  # 👈 required; provide a value
     owner:  # 👈 required; provide a value
     repo:  # 👈 required; provide a value

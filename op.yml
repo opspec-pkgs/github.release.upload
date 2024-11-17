@@ -1,7 +1,6 @@
 description: Uploads an asset to an existing GitHub release
 name: github.com/opspec-pkgs/github.release.upload
-opspec: 0.1.6
-version: 1.0.0
+version: 2.0.0
 inputs:
   owner:
     string:
@@ -14,14 +13,10 @@ inputs:
   id:
     number:
       description: the github release ID
-  loginUsername:
+  accessToken:
+    description: access token for logging in to the github api
     string:
       constraints: { minLength: 1 }
-      description: user for logging in to the github api
-  loginPassword:
-    string:
-      constraints: { minLength: 1 }
-      description: password for logging in to the github api
       isSecret: true
   name:
     string:
@@ -32,17 +27,30 @@ inputs:
       description: The file to be uploaded as an asset
 run:
   serial:
-    - container:
-        image: { ref: 'opspecpkgs/github.release.upload:1.0.0' }
-        cmd: [ /cmd.sh ]
-        envVars:
-          owner:
-          repo:
-          id:
-          loginUsername:
-          loginPassword:
-          name:
-        workDir: /
-        files:
-          /cmd.sh: $(/cmd.sh)
-          /asset: $(asset)
+    - op:
+        ref: github.com/opspec-pkgs/http.send#1.0.0
+        inputs:
+          method: POST
+          url: https://uploads.github.com/repos/$(owner)/$(repo)/releases/$(id)/assets?name=$(name)
+          headers:
+            Authorization:
+              - Bearer $(accessToken)
+            Content-Type:
+              - application/octet-stream
+          body: $(asset)
+        outputs:
+          headers: $(headers)
+          body: $(response)
+          statusCode:
+    - if:
+        - ne: [ $(statusCode), 201]
+      container:
+        image: { ref: alpine }
+        cmd:
+          - sh
+          - -ce
+          - |
+            echo "Failed to upload asset to release; got status code $(statusCode)"
+            echo $(response)
+            sleep 1
+            exit 1
